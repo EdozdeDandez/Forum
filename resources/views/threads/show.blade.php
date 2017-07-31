@@ -7,8 +7,8 @@
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <a href="#">{{ $thread->creator->name }}</a> posted:
-                        {{ $thread->title }}</div>
-
+                        {{ $thread->title }}
+                    </div>
                     <div class="panel-body">
                         {{ $thread->body }}
                     </div>
@@ -34,11 +34,12 @@
             <div class="col-md-4">
                 <div class="panel panel-default">
                     <div class="panel-body">
-                       <p>
-                           This thread was published {{ $thread->created_at->diffForHumans() }} by
-                           <a href="#"> {{ $thread->creator->name }}</a> and currently  has
-                           {{ $thread->replies_count }} {{ str_plural('comment', $thread->replies_count) }}.
-                       </p>
+                        <p>
+                            This thread was published {{ $thread->created_at->diffForHumans() }} by
+                            <a href="#"> {{ $thread->creator->name }}</a> and currently  has
+                            {{ $thread->replies_count }} {{ str_plural('comment', $thread->replies_count) }}.
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>

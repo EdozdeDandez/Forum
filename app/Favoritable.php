@@ -6,10 +6,8 @@
  * Time: 1:33 AM
  */
 
-namespace App\Http;
+namespace App;
 
-
-use App\Favorite;
 
 trait Favoritable
 {

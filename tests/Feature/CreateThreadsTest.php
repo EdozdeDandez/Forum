@@ -11,15 +11,7 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 class CreateThreadsTest extends TestCase
 {
     use DatabaseMigrations;
-    /**
-     * A basic test example.
-     *
-     * @return void
-     */
-    public function testExample()
-    {
-        $this->assertTrue(true);
-    }
+
     /** @test */
     function guests_may_not_create_threads()
     {

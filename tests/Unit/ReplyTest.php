@@ -9,15 +9,7 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 class ReplyTest extends TestCase
 {
     use DatabaseMigrations;
-    /**
-     * A basic test example.
-     *
-     * @return void
-     */
-    public function testExample()
-    {
-        $this->assertTrue(true);
-    }
+
     /** @test */
     function it_has_an_owner(){
         $reply = create('App\Reply');

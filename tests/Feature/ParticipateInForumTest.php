@@ -10,15 +10,7 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 class ParticipateInForumTest extends TestCase
 {
     use DatabaseMigrations;
-    /**
-     * A basic test example.
-     *
-     * @return void
-     */
-    public function testExample()
-    {
-        $this->assertTrue(true);
-    }
+
     /** @test */
     function unauthenticated_users_may_not_add_replies()
     {
@@ -44,5 +36,25 @@ class ParticipateInForumTest extends TestCase
         $reply = make('App\Reply',['body' => null]);
         $this->post($thread->path().'/replies', $reply->toArray())
             ->assertSessionHasErrors('body');
+    }
+    /** @test */
+    function unauthorized_users_cannot_delete_replies ()
+    {
+        $this->withExceptionHandling();
+        $reply = create('App\Reply');
+        $this->delete("/replies/{$reply->id}")
+            ->assertRedirect('login');
+        $this->signIn()
+            ->delete("/replies/{$reply->id}")
+            ->assertStatus(403);
+    }
+    /** @test */
+    function authorised_users_can_delete_replies ()
+    {
+        $this->signIn();
+        $reply = create('App\Reply', ['user_id' => auth()->id()]);
+        $this->delete("/replies/{$reply->id}")
+            ->assertStatus(302);
+        $this->assertDatabaseMissing('replies', ['id' => $reply->id]);
     }
 }

@@ -2,6 +2,8 @@
 
 namespace Tests\Unit;
 
+use App\Notifications\ThreadWasUpdated;
+use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -21,10 +23,6 @@ class ThreadTest extends TestCase
         $this->thread = create('App\Thread');
     }
 
-    public function testExample()
-    {
-        $this->assertTrue(true);
-    }
     /** @test */
     function a_thread_can_make_a_string_path()
     {
@@ -49,6 +47,18 @@ class ThreadTest extends TestCase
             'user_id' => 1
         ]);
         $this->assertCount(1, $this->thread->replies);
+    }
+    /** @test */
+    public function a_thread_notifies_all_registered_subscribers_when_a_reply_is_added ()
+    {
+        Notification::fake();
+        $this->signIn()
+            ->thread->subscribe()
+            ->addReply([
+                'body' => 'Foobar',
+                'user_id' => 999
+        ]);
+        Notification::assertSentTo(auth()->user(), ThreadWasUpdated::class);
     }
     /** @test */
     public function a_thread_belongs_to_a_channel()

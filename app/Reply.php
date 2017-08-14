@@ -23,14 +23,25 @@ class Reply extends Model
         });
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function owner()
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function thread()
     {
         return $this->belongsTo(Thread::class);
     }
+
+    /**
+     * @return string
+     */
     public function path()
     {
         return $this->thread->path()."#reply-{$this->id}";

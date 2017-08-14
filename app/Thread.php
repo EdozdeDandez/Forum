@@ -68,6 +68,10 @@ class Thread extends Model
 
         return $reply;
     }
+
+    /**
+     * @param $reply
+     */
     public function  notifySubscribers ($reply)
     {
         $this->subscriptions
@@ -85,23 +89,44 @@ class Thread extends Model
         return $filters->apply($query);
     }
 
+    /**
+     * @param null $userId
+     * @return $this
+     */
     public function subscribe($userId = null)
     {
         $this->subscriptions()->create(['user_id' => $userId ? : auth()->id()]);
         return $this;
     }
+
+    /**
+     * @param null $userId
+     */
     public function unsubscribe($userId = null)
     {
         $this->subscriptions()->where('user_id', $userId ? : auth()->id())->delete();
     }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function subscriptions()
     {
         return $this->hasMany(ThreadSubscription::class);
     }
+
+    /**
+     * @return mixed
+     */
     public function getIsSubscribedToAttribute()
     {
         return $this->subscriptions()->where('user_id', auth()->id())->exists();
     }
+
+    /**
+     * @param $user
+     * @return bool
+     */
     public function hasUpdatesFor ($user)
     {
         $key = $user->visitedThreadCacheKey($this);

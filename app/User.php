@@ -28,22 +28,44 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token', 'email'
     ];
+
+    /**
+     * @return string
+     */
     public function getRouteKeyName()
     {
         return 'name';
     }
+
+    /**
+     * @return mixed
+     */
     public function threads()
     {
         return $this->hasMany(Thread::class)->latest();
     }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function activity()
     {
         return $this->hasMany(Activity::class);
     }
+
+    /**
+     * @param $thread
+     * @return mixed
+     */
     public function read($thread)
     {
         return cache()->forever($this->visitedThreadCacheKey($thread), Carbon::now());
     }
+
+    /**
+     * @param $thread
+     * @return string
+     */
     public function visitedThreadCacheKey ($thread)
     {
         return sprintf("users.%s.visits.%s", $this->id, $thread->id);

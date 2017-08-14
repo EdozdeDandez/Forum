@@ -10,6 +10,11 @@ class ReplyPolicy
 {
     use HandlesAuthorization;
 
+    /**
+     * @param User $user
+     * @param Reply $reply
+     * @return bool
+     */
     public function update (User $user, Reply $reply)
     {
         return $reply->user_id == $user->id;

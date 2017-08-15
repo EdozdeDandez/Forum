@@ -10,7 +10,6 @@
 <script>
     import Reply from './Reply.vue'
     import NewReply from './NewReply.vue'
-//    import Paginator from './Paginator.vue'
     import collection from '../mixins/collection'
     export default {
         components: { Reply, NewReply },

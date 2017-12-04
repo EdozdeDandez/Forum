@@ -6,6 +6,7 @@ use App\Inspections\Spam;
 use App\Reply;
 use Illuminate\Http\Request;
 use App\Thread;
+use Mockery\Exception;
 
 class RepliesController extends Controller
 {
@@ -30,22 +31,26 @@ class RepliesController extends Controller
     /**
      * @param $channelId
      * @param Thread $thread
-     * @param Spam $spam
      * @return $this|\Illuminate\Http\RedirectResponse
      */
-    public function store($channelId, Thread $thread, Spam $spam)
+    public function store($channelId, Thread $thread)
     {
-        $this->validate(request(), ['body' => 'required']);
-        $spam->detect(request('body'));
+        try{
+            $this->validateReply();
 
-        $reply = $thread->addReply([
-            'body' => request('body'),
-            'user_id' => auth()->id()
-        ]);
-        if (request()->expectsJson()) {
-            return $reply->load('owner');
+            $reply = $thread->addReply([
+                'body' => request('body'),
+                'user_id' => auth()->id()
+            ]);
+        } catch (\Exception $e) {
+            return response('Sorry, your reply could not be saved at this time.', 422);
         }
-        return back()->with('flash', 'Your reply has been left.');
+
+        return $reply->load('owner');
+//        if (request()->expectsJson()) {
+//            return $reply->load('owner');
+//        }
+//        return back()->with('flash', 'Your reply has been left.');
     }
 
     /**
@@ -68,6 +73,17 @@ class RepliesController extends Controller
     public function update (Reply $reply)
     {
         $this->authorize('update', $reply);
-        $reply->update(request(['body']));
+        try{
+            $this->validateReply();
+            $reply->update(request(['body']));
+        } catch (\Exception $e) {
+            return response('Sorry, your reply could not be saved at this time.', 422);
+        }
+    }
+
+    protected function validateReply()
+    {
+        $this->validate(request(), ['body' => 'required']);
+        resolve(Spam::class)->detect(request('body'));
     }
 }

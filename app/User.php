@@ -45,6 +45,11 @@ class User extends Authenticatable
         return $this->hasMany(Thread::class)->latest();
     }
 
+    public function lastReply()
+    {
+        return $this->hasOne(Reply::class)->latest();
+    }
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */

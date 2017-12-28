@@ -3,10 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CreatePostRequest;
-use App\Notifications\YouWereMentioned;
 use App\Reply;
 use App\Thread;
-use App\User;
 
 class RepliesController extends Controller
 {
@@ -62,11 +60,8 @@ class RepliesController extends Controller
     public function update (Reply $reply)
     {
         $this->authorize('update', $reply);
-        try{
-            $this->validate(request(), ['body' => 'required|spamfree']);
-            $reply->update(request(['body']));
-        } catch (\Exception $e) {
-            return response('Sorry, your reply could not be saved at this time.', 422);
-        }
+
+        $this->validate(request(), ['body' => 'required|spamfree']);
+        $reply->update(request(['body']));
     }
 }
